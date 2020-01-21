@@ -8,5 +8,5 @@ public interface PokemonService {
     String BASE_URL = "https://pokeapi.co/api/v2/";
 
     @GET("{number}/")
-    Call<Pokemon> getPokemonInformation(@Path("number") String number);
+    Call<Pokemon> getPokemonInformation(@Path("number") int number);
 }

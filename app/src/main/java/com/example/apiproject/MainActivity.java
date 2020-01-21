@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     private Pokemon getPokemonByIdNumber(int idNumber) {
-        Call<Pokemon> pokemonCall = pokemonService.getPokemonInformation(String.valueOf(idNumber));
+        Call<Pokemon> pokemonCall = pokemonService.getPokemonInformation(idNumber);
 
         pokemonCall.enqueue(new Callback<Pokemon>() {
             @Override
