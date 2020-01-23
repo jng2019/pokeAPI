@@ -3,6 +3,7 @@ package com.example.apiproject;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,27 +29,28 @@ public class MainActivity extends AppCompatActivity {
     private PokemonService pokemonService;
     private PokeAdapter pokeAdapter;
     private Pokemon poke;
+    public static final String TAG = MainActivity.class.getSimpleName();
+    private int i;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        for(int i = 1; i <= 807;i++){
+        for( i = 1; i <= 20;i++){
+            Log.d(TAG, "onCreate: " + i + " ");
             getPokemonByIdNumber(i);
         }
-
         pokeAdapter = new PokeAdapter(pokemonList);
         listView = findViewById(R.id.listView_main_thing);
-        listView.setAdapter(pokeAdapter);
+        //listView.setAdapter(pokeAdapter);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(PokemonService.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        PokemonService pokemonService = retrofit.create(PokemonService.class);
+        pokemonService = retrofit.create(PokemonService.class);
     }
-
-
     private class PokeAdapter extends ArrayAdapter<Pokemon> {
         // make an instance variable to keep track of the hero list
         private List<Pokemon> pokemonList;
@@ -91,32 +93,24 @@ public class MainActivity extends AppCompatActivity {
             return convertView;
         }
     }
-    private Pokemon getPokemonByIdNumber(int idNumber) {
+    private void getPokemonByIdNumber(int idNumber) {
         Call<Pokemon> pokemonCall = pokemonService.getPokemonInformation(idNumber);
-
         pokemonCall.enqueue(new Callback<Pokemon>() {
             @Override
             public void onResponse(Call<Pokemon> call, Response<Pokemon> response) {
                 //Any code that depends on the results of the search
                 //has to go here
-
                 Pokemon foundPokemon = response.body();
                 //check if the body isn't null
                 if (foundPokemon != null) {
-
-                    poke = foundPokemon;
-                    pokemonList.add(poke);
-
-
+                    pokemonList.add(foundPokemon);
                 }
             }
-
             @Override
             public void onFailure(Call<Pokemon> call, Throwable t) {
                 //Toast the failure
                 Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-        return poke;
     }
 }
